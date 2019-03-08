@@ -1,0 +1,57 @@
+defaultTasks 'clean','test','aggregate'
+
+group 'com.bdd.automation'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:$serenityCoreVersion")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'net.serenity-bdd.aggregator'
+
+/**
+ * This is needed to make sure there are no Cucumber 2 dependencies in the classpath.
+ */
+configurations.all {
+    resolutionStrategy {
+        force "io.cucumber:cucumber-core:${cucumberVersion}"
+    }
+}
+
+dependencies {
+    testCompile "org.slf4j:slf4j-api:$slf4jVersion",
+    "ch.qos.logback:logback-classic:${logbackVersion}",
+    "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}",
+    "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}",
+    "net.serenity-bdd:serenity-cucumber4:${serenityCucumberVersion}",
+    "org.assertj:assertj-core:${assertJVersion}",
+    "net.serenity-bdd:serenity-rest-assured:${serenityCoreVersion}",
+    "net.serenity-bdd:serenity-screenplay-rest:${serenityCoreVersion}",
+    //"net.serenity-bdd:serenity-jira-requirements-provider:${serenityJiraPluginVersion}",
+    "net.serenity-bdd:serenity-jira-plugin:${serenityJiraPluginVersion}",
+    "net.serenity-bdd:serenity-core:${serenityCoreVersion}",
+    "net.serenity-bdd:serenity-junit:${serenityCoreVersion}",
+    "io.cucumber:cucumber-core:${cucumberVersion}",
+    "io.cucumber:cucumber-java:${cucumberVersion}",
+    "io.cucumber:cucumber-junit:${cucumberVersion}",
+    "junit:junit:${junitVersion}",
+    "com.googlecode.lambdaj:lambdaj:2.3.3"
+
+}
+
+gradle.startParameter.continueOnFailure = true
+
+test.finalizedBy(aggregate)
